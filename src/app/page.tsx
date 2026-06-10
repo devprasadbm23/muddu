@@ -1,21 +1,10 @@
-import { createFileRoute } from "@tanstack/react-router";
+"use client";
+
 import { useEffect, useMemo, useRef, useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import confetti from "canvas-confetti";
 
-export const Route = createFileRoute("/")({
-  head: () => ({
-    meta: [
-      { title: "Muddu, will you be mine? 💫" },
-      { name: "description", content: "A little universe made just for you, Muddu." },
-      { property: "og:title", content: "Muddu, will you be mine? 💫" },
-      { property: "og:description", content: "A little universe made just for you, Muddu." },
-    ],
-  }),
-  component: Index,
-});
-
-function Index() {
+export default function Index() {
   const [stage, setStage] = useState<"intro" | "question" | "yes">("intro");
   const [noPos, setNoPos] = useState({ x: 0, y: 0 });
   const noBtnRef = useRef<HTMLButtonElement>(null);
