@@ -3,34 +3,51 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import confetti from "canvas-confetti";
+import { sendNotificationEmail } from "@/lib/email";
 
 export default function Index() {
   const [stage, setStage] = useState<"intro" | "question" | "yes">("intro");
   const [noPos, setNoPos] = useState({ x: 0, y: 0 });
   const noBtnRef = useRef<HTMLButtonElement>(null);
 
-  const stars = useMemo(
-    () =>
+  interface Star {
+    left: number;
+    top: number;
+    size: number;
+    delay: number;
+    duration: number;
+  }
+
+  interface Heart {
+    left: number;
+    delay: number;
+    duration: number;
+    size: number;
+  }
+
+  const [stars, setStars] = useState<Star[]>([]);
+  const [hearts, setHearts] = useState<Heart[]>([]);
+
+  useEffect(() => {
+    setStars(
       Array.from({ length: 90 }, () => ({
         left: Math.random() * 100,
         top: Math.random() * 100,
         size: Math.random() * 2 + 1,
         delay: Math.random() * 4,
         duration: 2 + Math.random() * 3,
-      })),
-    [],
-  );
+      }))
+    );
 
-  const hearts = useMemo(
-    () =>
+    setHearts(
       Array.from({ length: 14 }, (_, i) => ({
         left: Math.random() * 100,
         delay: (i * 1.3) % 12,
         duration: 10 + Math.random() * 8,
         size: 12 + Math.random() * 18,
-      })),
-    [],
-  );
+      }))
+    );
+  }, []);
 
   const fireConfetti = () => {
     const colors = ["#ff8ec7", "#ffb3d9", "#ffd1e8", "#c9a4ff", "#fff1a8"];
@@ -62,6 +79,7 @@ export default function Index() {
   const handleYes = () => {
     setStage("yes");
     fireConfetti();
+    sendNotificationEmail().catch((err) => console.error("Failed to send notification email:", err));
     const interval = setInterval(fireConfetti, 1800);
     setTimeout(() => clearInterval(interval), 9000);
   };
